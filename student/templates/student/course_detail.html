@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}{{ course.name }}{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="header-actions">
+        <h2><i class="fas fa-book"></i> {{ course.code }} - {{ course.name }}</h2>
+        <div style="display: flex; gap: 10px;">
+            <a href="{% url 'course_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+            <a href="{% url 'course_update' course.pk %}" class="btn btn-primary"><i class="fas fa-edit"></i> Edit</a>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <div
+            style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%); padding: 25px; border-radius: 16px; margin-bottom: 30px;">
+            <p style="margin-bottom: 10px;"><strong><i class="fas fa-align-left"></i> Description:</strong> {{
+                course.description }}</p>
+            <p style="margin-bottom: 10px;"><strong><i class="fas fa-credit-card"></i> Credits:</strong> {{
+                course.credits }}</p>
+            <p style="margin-bottom: 10px;"><strong><i class="fas fa-calendar"></i> Semester:</strong> {{
+                course.semester }}</p>
+            {% if course.teacher %}
+            <p style="margin-bottom: 10px;"><strong><i class="fas fa-chalkboard-teacher"></i> Teacher:</strong> {{
+                course.teacher.get_full_name }}</p>
+            {% endif %}
+            <p><strong><i class="fas fa-users"></i> Enrolled Students:</strong> {{ enrollments.count }}</p>
+        </div>
+
+        <h3 style="margin-bottom: 20px;"><i class="fas fa-users"></i> Enrolled Students</h3>
+        {% if enrollments %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Roll Number</th>
+                        <th>Enrollment Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for enrollment in enrollments %}
+                    <tr>
+                        <td><a href="{% url 'student_detail' enrollment.student.pk %}"
+                                style="color: var(--primary); text-decoration: none; font-weight: 600;">{{
+                                enrollment.student.name }}</a></td>
+                        <td>{{ enrollment.student.roll_number }}</td>
+                        <td>{{ enrollment.enrollment_date }}</td>
+                        <td>
+                            {% if enrollment.is_active %}
+                            <span style="color: var(--success);"><i class="fas fa-check-circle"></i> Active</span>
+                            {% else %}
+                            <span style="color: var(--danger);"><i class="fas fa-times-circle"></i> Inactive</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="text-align: center; color: var(--gray); padding: 40px;">No students enrolled yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

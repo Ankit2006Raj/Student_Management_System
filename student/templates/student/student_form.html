@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - Student Management{% endblock %}
+
+{% block content %}
+<div class="card form-container">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h2 style="font-size: 2rem; color: var(--dark); margin-bottom: 8px;">
+            <i class="fas fa-user-edit"></i> {{ title }}
+        </h2>
+        <p style="color: var(--gray);">Fill in the student information below</p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div class="form-group">
+            <label for="{{ field.id_for_label }}">
+                {% if field.name == "name" %}
+                <i class="fas fa-user"></i>
+                {% elif field.name == "roll_number" %}
+                <i class="fas fa-id-card"></i>
+                {% elif field.name == "email" %}
+                <i class="fas fa-envelope"></i>
+                {% elif field.name == "marks" %}
+                <i class="fas fa-chart-line"></i>
+                {% endif %}
+                {{ field.label }}
+            </label>
+            {{ field }}
+            {% if field.errors %}
+            <div
+                style="color: var(--danger); font-size: 0.85rem; margin-top: 6px; display: flex; align-items: center; gap: 6px;">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ field.errors }}
+            </div>
+            {% endif %}
+            {% if field.help_text %}
+            <div style="color: var(--gray); font-size: 0.85rem; margin-top: 4px;">
+                <i class="fas fa-info-circle"></i> {{ field.help_text }}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <div class="form-group actions" style="margin-top: 30px;">
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-save"></i> Save Student
+            </button>
+            <a href="{% url 'student_list' %}" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

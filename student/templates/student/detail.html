@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}{{ student.name }}{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 900px; margin: 0 auto;">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 30px;">
+        <h2><i class="fas fa-user-circle"></i> Student Profile</h2>
+        <div style="display: flex; gap: 10px;">
+            <a href="{% url 'student_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+            <a href="{% url 'student_update' student.pk %}" class="btn btn-primary"><i class="fas fa-edit"></i> Edit</a>
+        </div>
+    </div>
+    <div style="text-align: center; margin-bottom: 30px;">
+        {% if student.photo %}
+        <img src="{{ student.photo.url }}"
+            style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 5px solid var(--primary);">
+        {% else %}
+        <div
+            style="width: 150px; height: 150px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--secondary)); display: inline-flex; align-items: center; justify-content: center;">
+            <i class="fas fa-user" style="font-size: 4rem; color: white;"></i>
+        </div>
+        {% endif %}
+        <h3 style="margin-top: 15px;">{{ student.name }}</h3>
+        <p style="color: var(--gray);">Roll: {{ student.roll_number }}</p>
+    </div>
+    <div style="background: linear-gradient(135deg, 
+        {% if student.grade == 'A' %}#d1fae5, #a7f3d0); color: #065f46;
+        {% elif student.grade == 'B' %}#dbeafe, #bfdbfe); color: #1e40af;
+        {% else %}#fee2e2, #fecaca); color: #991b1b;{% endif %}
+        padding: 20px; border-radius: 12px; text-align: center; margin-bottom: 20px;">
+        <h2 style="font-size: 2.5rem;">{{ student.marks }}%</h2>
+        <p style="font-size: 1.2rem;">Grade: {{ student.grade }}</p>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+        <div style="padding: 15px; background: rgba(99, 102, 241, 0.05); border-radius: 12px;">
+            <p style="color: var(--gray); font-size: 0.9rem;">Email</p>
+            <p style="font-weight: 600;">{{ student.email }}</p>
+        </div>
+        <div style="padding: 15px; background: rgba(236, 72, 153, 0.05); border-radius: 12px;">
+            <p style="color: var(--gray); font-size: 0.9rem;">Phone</p>
+            <p style="font-weight: 600;">{{ student.phone|default:"N/A" }}</p>
+        </div>
+        <div style="padding: 15px; background: rgba(99, 102, 241, 0.05); border-radius: 12px;">
+            <p style="color: var(--gray); font-size: 0.9rem;">Date of Birth</p>
+            <p style="font-weight: 600;">{{ student.date_of_birth|date:"M d, Y"|default:"N/A" }}</p>
+        </div>
+        <div style="padding: 15px; background: rgba(236, 72, 153, 0.05); border-radius: 12px;">
+            <p style="color: var(--gray); font-size: 0.9rem;">City</p>
+            <p style="font-weight: 600;">{{ student.city|default:"N/A" }}</p>
+        </div>
+    </div>
+    {% if student.address %}
+    <div style="margin-top: 20px; padding: 15px; background: rgba(99, 102, 241, 0.05); border-radius: 12px;">
+        <p style="color: var(--gray); font-size: 0.9rem;">Address</p>
+        <p style="font-weight: 600;">{{ student.address }}</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %}Announcements{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="header-actions">
+        <h2><i class="fas fa-bullhorn"></i> Announcements</h2>
+        <div style="display: flex; gap: 10px;">
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="{% url 'announcement_create' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Create
+                Announcement</a>
+        </div>
+    </div>
+
+    {% if announcements %}
+    <div style="margin-top: 30px;">
+        {% for announcement in announcements %}
+        <div
+            style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%); padding: 25px; border-radius: 16px; border-left: 4px solid var(--primary); margin-bottom: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                <h3 style="color: var(--primary); margin: 0;">{{ announcement.title }}</h3>
+                <span
+                    style="padding: 6px 12px; border-radius: 8px; background: var(--primary); color: white; font-size: 0.85rem; font-weight: 600;">
+                    Priority: {{ announcement.priority }}
+                </span>
+            </div>
+            <p style="color: var(--dark); margin-bottom: 15px;">{{ announcement.content }}</p>
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; color: var(--gray); font-size: 0.9rem;">
+                <span><i class="fas fa-user"></i> {{ announcement.created_by.get_full_name|default:"Admin" }}</span>
+                <span><i class="fas fa-calendar"></i> {{ announcement.created_at|date:"M d, Y" }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-bullhorn"></i>
+        <h3>No Announcements</h3>
+        <p>Create your first announcement.</p>
+        <a href="{% url 'announcement_create' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Create
+            Announcement</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

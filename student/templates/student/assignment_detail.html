@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}{{ assignment.title }}{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="header-actions">
+        <h2><i class="fas fa-tasks"></i> {{ assignment.title }}</h2>
+        <div style="display: flex; gap: 10px;">
+            <a href="{% url 'assignment_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+            <a href="{% url 'assignment_update' assignment.pk %}" class="btn btn-primary"><i class="fas fa-edit"></i>
+                Edit</a>
+            <a href="{% url 'submit_assignment' assignment.pk %}" class="btn btn-success"><i class="fas fa-upload"></i>
+                Submit</a>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px;">
+        <div
+            style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%); padding: 25px; border-radius: 16px; margin-bottom: 30px;">
+            <p style="margin-bottom: 10px;"><strong><i class="fas fa-book"></i> Course:</strong> {{
+                assignment.course.name }}</p>
+            <p style="margin-bottom: 10px;"><strong><i class="fas fa-align-left"></i> Description:</strong> {{
+                assignment.description }}</p>
+            <p style="margin-bottom: 10px;"><strong><i class="fas fa-calendar"></i> Due Date:</strong> {{
+                assignment.due_date }}</p>
+            <p style="margin-bottom: 10px;"><strong><i class="fas fa-star"></i> Total Marks:</strong> {{
+                assignment.total_marks }}</p>
+            {% if assignment.attachment %}
+            <p><strong><i class="fas fa-file"></i> Attachment:</strong> <a href="{{ assignment.attachment.url }}"
+                    target="_blank">Download</a></p>
+            {% endif %}
+        </div>
+
+        <h3 style="margin-bottom: 20px;"><i class="fas fa-upload"></i> Submissions ({{ submissions.count }})</h3>
+        {% if submissions %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Submitted At</th>
+                        <th>Marks</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for submission in submissions %}
+                    <tr>
+                        <td><strong>{{ submission.student.name }}</strong></td>
+                        <td>{{ submission.submitted_at }}</td>
+                        <td>{{ submission.marks_obtained|default:"Not Graded" }}</td>
+                        <td>
+                            {% if submission.is_late %}
+                            <span style="color: var(--warning);"><i class="fas fa-clock"></i> Late</span>
+                            {% else %}
+                            <span style="color: var(--success);"><i class="fas fa-check"></i> On Time</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="text-align: center; color: var(--gray); padding: 40px;">No submissions yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

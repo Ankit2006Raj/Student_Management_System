@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="card" style="margin-bottom: 30px;">
+    <h2 style="font-size: 2.2rem; color: var(--dark); margin-bottom: 20px; text-align: center;">
+        <i class="fas fa-chart-line"></i> Dashboard
+    </h2>
+    <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+        <div
+            style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; border-radius: 16px; color: white;">
+            <p style="font-size: 0.9rem; opacity: 0.9;">Total Students</p>
+            <h3 style="font-size: 2.5rem; font-weight: 700;">{{ total_students }}</h3>
+        </div>
+        <div
+            style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 25px; border-radius: 16px; color: white;">
+            <p style="font-size: 0.9rem; opacity: 0.9;">Average Marks</p>
+            <h3 style="font-size: 2.5rem; font-weight: 700;">{{ average_marks }}%</h3>
+        </div>
+    </div>
+    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 30px;">
+        <a href="{% url 'student_list' %}" class="btn btn-primary"><i class="fas fa-list"></i> View All Students</a>
+        <a href="{% url 'student_create' %}" class="btn btn-success"><i class="fas fa-plus"></i> Add Student</a>
+        <a href="{% url 'export_csv' %}" class="btn btn-secondary"><i class="fas fa-file-csv"></i> Export CSV</a>
+        <a href="{% url 'export_excel' %}" class="btn btn-secondary"><i class="fas fa-file-excel"></i> Export Excel</a>
+        <a href="{% url 'import_csv' %}" class="btn btn-secondary"><i class="fas fa-upload"></i> Import CSV</a>
+    </div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px;">
+    <div class="card">
+        <h3 style="margin-bottom: 20px;"><i class="fas fa-trophy"></i> Top Performers</h3>
+        {% for student in top_performers %}
+        <div
+            style="padding: 12px; margin-bottom: 10px; background: linear-gradient(90deg, rgba(99, 102, 241, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%); border-radius: 8px;">
+            <strong>{{ student.name }}</strong> - {{ student.marks }}%
+        </div>
+        {% endfor %}
+    </div>
+    <div class="card">
+        <h3 style="margin-bottom: 20px;"><i class="fas fa-chart-pie"></i> Grade Distribution</h3>
+        <canvas id="gradeChart" style="max-height: 300px;"></canvas>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('gradeChart');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: {{ grade_distribution| safe }}.map(g => g.grade),
+        datasets: [{
+            data: {{ grade_distribution| safe }}.map(g => g.count),
+        backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#6b7280']
+        }]
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+{% block title %}Student List{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="header-actions">
+        <h2><i class="fas fa-users"></i> All Students</h2>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="{% url 'student_create' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Student</a>
+            <button onclick="bulkDelete()" class="btn btn-danger" id="bulkDeleteBtn" style="display:none;">
+                <i class="fas fa-trash"></i> Delete Selected
+            </button>
+        </div>
+    </div>
+
+    <!-- Search and Filter Form -->
+    <form method="get"
+        style="margin: 25px 0; padding: 20px; background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%); border-radius: 12px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+            <div>
+                <label style="font-size: 0.9rem; margin-bottom: 6px; display: block;"><i class="fas fa-search"></i>
+                    Search</label>
+                <input type="text" name="search" value="{{ search_query }}" placeholder="Name, Roll, Email..."
+                    style="width: 100%; padding: 10px; border: 2px solid var(--border); border-radius: 8px;">
+            </div>
+            <div>
+                <label style="font-size: 0.9rem; margin-bottom: 6px; display: block;"><i class="fas fa-filter"></i>
+                    Grade</label>
+                <select name="grade" id="gradeSelect"
+                    style="width: 100%; padding: 10px; border: 2px solid var(--border); border-radius: 8px;">
+                    <option value="">All Grades</option>
+                    <option value="A">A (90-100)</option>
+                    <option value="B">B (80-89)</option>
+                    <option value="C">C (70-79)</option>
+                    <option value="D">D (60-69)</option>
+                    <option value="F">F (0-59)</option>
+                </select>
+            </div>
+            <div>
+                <label style="font-size: 0.9rem; margin-bottom: 6px; display: block;"><i class="fas fa-sort"></i> Sort
+                    By</label>
+                <select name="sort" id="sortSelect"
+                    style="width: 100%; padding: 10px; border: 2px solid var(--border); border-radius: 8px;">
+                    <option value="-created_at">Newest First</option>
+                    <option value="name">Name (A-Z)</option>
+                    <option value="-name">Name (Z-A)</option>
+                    <option value="roll_number">Roll (Low-High)</option>
+                    <option value="-marks">Marks (High-Low)</option>
+                </select>
+            </div>
+            <div style="display: flex; align-items: end; gap: 8px;">
+                <button type="submit" class="btn btn-primary" style="flex: 1;"><i class="fas fa-search"></i>
+                    Apply</button>
+                <a href="{% url 'student_list' %}" class="btn btn-secondary"><i class="fas fa-redo"></i></a>
+            </div>
+        </div>
+    </form>
+
+    {% if page_obj %}
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 40px;"><input type="checkbox" id="selectAll" onclick="toggleSelectAll()"></th>
+                    <th><i class="fas fa-user"></i> Name</th>
+                    <th><i class="fas fa-id-card"></i> Roll</th>
+                    <th><i class="fas fa-envelope"></i> Email</th>
+                    <th><i class="fas fa-chart-line"></i> Marks</th>
+                    <th><i class="fas fa-graduation-cap"></i> Grade</th>
+                    <th style="text-align: center;"><i class="fas fa-cog"></i> Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in page_obj %}
+                <tr>
+                    <td><input type="checkbox" class="student-checkbox" value="{{ student.id }}"></td>
+                    <td><strong>{{ student.name }}</strong></td>
+                    <td>{{ student.roll_number }}</td>
+                    <td>{{ student.email }}</td>
+                    <td>
+                        <span style="padding: 6px 12px; border-radius: 8px; font-weight: 600;
+                            background: {% if student.marks >= 90 %}linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); color: #065f46;
+                            {% elif student.marks >= 80 %}linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); color: #1e40af;
+                            {% elif student.marks >= 70 %}linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #92400e;
+                            {% elif student.marks >= 60 %}linear-gradient(135deg, #fed7aa 0%, #fdba74 100%); color: #9a3412;
+                            {% else %}linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); color: #991b1b;{% endif %}">
+                            {{ student.marks }}%
+                        </span>
+                    </td>
+                    <td>
+                        <span style="padding: 6px 12px; border-radius: 8px; font-weight: 600; font-size: 1.1rem;
+                            background: {% if student.grade == 'A' %}linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); color: #065f46;
+                            {% elif student.grade == 'B' %}linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); color: #1e40af;
+                            {% elif student.grade == 'C' %}linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #92400e;
+                            {% elif student.grade == 'D' %}linear-gradient(135deg, #fed7aa 0%, #fdba74 100%); color: #9a3412;
+                            {% else %}linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); color: #991b1b;{% endif %}">
+                            {{ student.grade }}
+                        </span>
+                    </td>
+                    <td class="actions">
+                        <a href="{% url 'student_detail' student.pk %}" class="btn btn-secondary"
+                            style="padding: 8px 16px; margin: 2px;">
+                            <i class="fas fa-eye"></i> View
+                        </a>
+                        <a href="{% url 'student_update' student.pk %}" class="btn btn-primary"
+                            style="padding: 8px 16px; margin: 2px;">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a href="{% url 'student_delete' student.pk %}" class="btn btn-danger"
+                            style="padding: 8px 16px; margin: 2px;">
+                            <i class="fas fa-trash"></i> Delete
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+    <div style="margin-top: 25px; display: flex; justify-content: center; align-items: center; gap: 10px;">
+        {% if page_obj.has_previous %}
+        <a href="?page=1&search={{ search_query }}&grade={{ grade_filter }}&sort={{ sort_by }}"
+            class="btn btn-secondary">
+            <i class="fas fa-angle-double-left"></i> First
+        </a>
+        <a href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}&grade={{ grade_filter }}&sort={{ sort_by }}"
+            class="btn btn-secondary">
+            <i class="fas fa-angle-left"></i> Previous
+        </a>
+        {% endif %}
+
+        <span
+            style="padding: 10px 20px; background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%); border-radius: 8px; font-weight: 600;">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}&search={{ search_query }}&grade={{ grade_filter }}&sort={{ sort_by }}"
+            class="btn btn-secondary">
+            Next <i class="fas fa-angle-right"></i>
+        </a>
+        <a href="?page={{ page_obj.paginator.num_pages }}&search={{ search_query }}&grade={{ grade_filter }}&sort={{ sort_by }}"
+            class="btn btn-secondary">
+            Last <i class="fas fa-angle-double-right"></i>
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <div
+        style="margin-top: 20px; padding: 15px; background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%); border-radius: 12px; text-align: center;">
+        <strong style="color: var(--dark);">
+            <i class="fas fa-info-circle"></i> Total Students: {{ page_obj.paginator.count }}
+        </strong>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-user-graduate"></i>
+        <h3>No Students Found</h3>
+        <p>Try adjusting your search or filters.</p>
+        <a href="{% url 'student_list' %}" class="btn btn-secondary"><i class="fas fa-redo"></i> Reset Filters</a>
+        <a href="{% url 'student_create' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Add Student</a>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    // Set selected values for filters
+    document.addEventListener('DOMContentLoaded', function () {
+        const gradeFilter = '{{ grade_filter|default:"" }}';
+        const sortBy = '{{ sort_by|default:"-created_at" }}';
+
+        if (gradeFilter) {
+            document.getElementById('gradeSelect').value = gradeFilter;
+        }
+        if (sortBy) {
+            document.getElementById('sortSelect').value = sortBy;
+        }
+    });
+
+    function toggleSelectAll() {
+        const checkboxes = document.querySelectorAll('.student-checkbox');
+        const selectAll = document.getElementById('selectAll');
+        checkboxes.forEach(cb => cb.checked = selectAll.checked);
+        updateBulkDeleteButton();
+    }
+
+    document.querySelectorAll('.student-checkbox').forEach(cb => {
+        cb.addEventListener('change', updateBulkDeleteButton);
+    });
+
+    function updateBulkDeleteButton() {
+        const checked = document.querySelectorAll('.student-checkbox:checked').length;
+        const btn = document.getElementById('bulkDeleteBtn');
+        if (checked > 0) {
+            btn.style.display = 'inline-flex';
+            btn.innerHTML = `<i class="fas fa-trash"></i> Delete Selected (${checked})`;
+        } else {
+            btn.style.display = 'none';
+        }
+    }
+
+    function bulkDelete() {
+        const selected = Array.from(document.querySelectorAll('.student-checkbox:checked')).map(cb => cb.value);
+        if (selected.length === 0) return;
+
+        if (!confirm(`Are you sure you want to delete ${selected.length} student(s)?`)) return;
+
+        fetch('{% url "bulk_delete" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: selected.map(id => `student_ids[]=${id}`).join('&')
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            });
+    }
+</script>
+{% endblock %}

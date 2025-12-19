@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block title %}Notifications{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="header-actions">
+        <h2><i class="fas fa-bell"></i> Notifications</h2>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary"><i class="fas fa-home"></i> Dashboard</a>
+    </div>
+
+    {% if notifications %}
+    <div style="margin-top: 30px;">
+        {% for notification in notifications %}
+        <div
+            style="background: {% if notification.is_read %}rgba(0,0,0,0.02){% else %}linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%){% endif %}; padding: 20px; border-radius: 12px; border-left: 4px solid {% if notification.notification_type == 'SUCCESS' %}var(--success){% elif notification.notification_type == 'WARNING' %}var(--warning){% elif notification.notification_type == 'ERROR' %}var(--danger){% else %}var(--primary){% endif %}; margin-bottom: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div style="flex: 1;">
+                    <h4 style="margin-bottom: 8px; {% if not notification.is_read %}font-weight: 700;{% endif %}">{{
+                        notification.title }}</h4>
+                    <p style="color: var(--gray); margin-bottom: 10px;">{{ notification.message }}</p>
+                    <span style="color: var(--gray); font-size: 0.85rem;"><i class="fas fa-clock"></i> {{
+                        notification.created_at|timesince }} ago</span>
+                </div>
+                {% if not notification.is_read %}
+                <a href="{% url 'mark_notification_read' notification.pk %}" class="btn btn-primary"
+                    style="padding: 8px 16px;">
+                    <i class="fas fa-check"></i> Mark Read
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-bell"></i>
+        <h3>No Notifications</h3>
+        <p>You're all caught up!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

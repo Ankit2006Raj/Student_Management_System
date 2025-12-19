@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}Attendance{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="header-actions">
+        <h2><i class="fas fa-calendar-check"></i> Attendance Records</h2>
+        <div style="display: flex; gap: 10px;">
+            <a href="{% url 'dashboard' %}" class="btn btn-secondary"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="{% url 'mark_attendance' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Mark
+                Attendance</a>
+            <a href="{% url 'attendance_report' %}" class="btn btn-success"><i class="fas fa-chart-bar"></i> Report</a>
+        </div>
+    </div>
+
+    {% if page_obj %}
+    <div class="table-container" style="margin-top: 30px;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Course</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Marked By</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for attendance in page_obj %}
+                <tr>
+                    <td><strong>{{ attendance.student.name }}</strong></td>
+                    <td>{{ attendance.course.name }}</td>
+                    <td>{{ attendance.date }}</td>
+                    <td>
+                        {% if attendance.status == "P" %}
+                        <span style="color: var(--success);"><i class="fas fa-check-circle"></i> Present</span>
+                        {% elif attendance.status == "A" %}
+                        <span style="color: var(--danger);"><i class="fas fa-times-circle"></i> Absent</span>
+                        {% elif attendance.status == "L" %}
+                        <span style="color: var(--warning);"><i class="fas fa-clock"></i> Late</span>
+                        {% else %}
+                        <span style="color: var(--gray);"><i class="fas fa-info-circle"></i> Excused</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ attendance.marked_by.get_full_name|default:"N/A" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if page_obj.has_other_pages %}
+    <div style="margin-top: 25px; display: flex; justify-content: center; gap: 10px;">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-secondary">Previous</a>
+        {% endif %}
+        <span style="padding: 10px 20px;">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-secondary">Next</a>
+        {% endif %}
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-calendar-check"></i>
+        <h3>No Attendance Records</h3>
+        <p>Start marking attendance for your courses.</p>
+        <a href="{% url 'mark_attendance' %}" class="btn btn-primary"><i class="fas fa-plus"></i> Mark Attendance</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

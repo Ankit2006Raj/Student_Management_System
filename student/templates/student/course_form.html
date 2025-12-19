@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <h2 style="margin-bottom: 30px; text-align: center;">
+        <i class="fas fa-book"></i> {{ title }}
+    </h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label><i class="fas fa-code"></i> Course Code</label>
+            <input type="text" name="code" value="{{ course.code|default:'' }}" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label><i class="fas fa-book"></i> Course Name</label>
+            <input type="text" name="name" value="{{ course.name|default:'' }}" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label><i class="fas fa-align-left"></i> Description</label>
+            <textarea name="description" class="form-control" rows="4">{{ course.description|default:'' }}</textarea>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+                <label><i class="fas fa-credit-card"></i> Credits</label>
+                <input type="number" name="credits" value="{{ course.credits|default:3 }}" class="form-control" min="1"
+                    max="10">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-calendar"></i> Semester</label>
+                <input type="text" name="semester" value="{{ course.semester|default:'' }}" class="form-control"
+                    placeholder="e.g., Fall 2024">
+            </div>
+        </div>
+
+        <div class="actions" style="margin-top: 30px;">
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-save"></i> Save Course
+            </button>
+            <a href="{% url 'course_list' %}" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

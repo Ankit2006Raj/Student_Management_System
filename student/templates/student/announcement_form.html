@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Create Announcement{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <h2 style="margin-bottom: 30px; text-align: center;">
+        <i class="fas fa-bullhorn"></i> Create Announcement
+    </h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label><i class="fas fa-heading"></i> Title</label>
+            <input type="text" name="title" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label><i class="fas fa-align-left"></i> Content</label>
+            <textarea name="content" class="form-control" rows="6" required></textarea>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+                <label><i class="fas fa-star"></i> Priority</label>
+                <input type="number" name="priority" value="0" class="form-control" min="0" max="10">
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-users"></i> Target Class (Optional)</label>
+                <input type="text" name="target_class" class="form-control" placeholder="e.g., 12A">
+            </div>
+        </div>
+
+        <div class="actions" style="margin-top: 30px;">
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-bullhorn"></i> Post Announcement
+            </button>
+            <a href="{% url 'announcement_list' %}" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

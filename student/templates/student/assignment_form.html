@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 800px; margin: 0 auto;">
+    <h2 style="margin-bottom: 30px; text-align: center;">
+        <i class="fas fa-tasks"></i> {{ title }}
+    </h2>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label><i class="fas fa-book"></i> Course</label>
+            <select name="course" class="form-control" required>
+                <option value="">Select course...</option>
+                {% for course in courses %}
+                <option value="{{ course.id }}" {% if assignment.course.id==course.id %}selected{% endif %}>{{
+                    course.code }} - {{ course.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label><i class="fas fa-heading"></i> Title</label>
+            <input type="text" name="title" value="{{ assignment.title|default:'' }}" class="form-control" required>
+        </div>
+
+        <div class="form-group">
+            <label><i class="fas fa-align-left"></i> Description</label>
+            <textarea name="description" class="form-control" rows="4"
+                required>{{ assignment.description|default:'' }}</textarea>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+                <label><i class="fas fa-calendar"></i> Due Date</label>
+                <input type="datetime-local" name="due_date" value="{{ assignment.due_date|date:'Y-m-d\TH:i' }}"
+                    class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-star"></i> Total Marks</label>
+                <input type="number" name="total_marks" value="{{ assignment.total_marks|default:100 }}"
+                    class="form-control" min="1" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label><i class="fas fa-file"></i> Attachment (Optional)</label>
+            <input type="file" name="attachment" class="form-control">
+        </div>
+
+        <div class="actions" style="margin-top: 30px;">
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-save"></i> Save Assignment
+            </button>
+            <a href="{% url 'assignment_list' %}" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

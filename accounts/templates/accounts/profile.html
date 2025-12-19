@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="header-actions">
+        <h2><i class="fas fa-user-circle"></i> My Profile</h2>
+        <a href="{% url 'dashboard' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to
+            Dashboard</a>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px; margin-top: 30px;">
+        <div style="text-align: center;">
+            {% if user.profile.avatar %}
+            <img src="{{ user.profile.avatar.url }}" alt="Avatar"
+                style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; border: 5px solid var(--primary); margin-bottom: 20px;">
+            {% else %}
+            <div
+                style="width: 200px; height: 200px; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 5px solid white; box-shadow: 0 10px 30px var(--shadow-lg);">
+                <i class="fas fa-user" style="font-size: 5rem; color: white;"></i>
+            </div>
+            {% endif %}
+
+            <h3 style="margin-bottom: 10px;">{{ user.get_full_name|default:user.username }}</h3>
+            <p style="color: var(--gray); margin-bottom: 5px;"><i class="fas fa-envelope"></i> {{ user.email }}</p>
+            <p style="color: var(--gray);"><i class="fas fa-user-tag"></i> {{ user.profile.get_role_display }}</p>
+
+            <div
+                style="margin-top: 20px; padding: 15px; background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%); border-radius: 12px;">
+                <p style="font-size: 0.9rem; color: var(--gray); margin-bottom: 5px;">Member Since</p>
+                <p style="font-weight: 600; color: var(--dark);">{{ user.date_joined|date:"F d, Y" }}</p>
+            </div>
+        </div>
+
+        <div>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label><i class="fas fa-phone"></i> Phone</label>
+                        {{ form.phone }}
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-birthday-cake"></i> Date of Birth</label>
+                        {{ form.date_of_birth }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-image"></i> Avatar</label>
+                    {{ form.avatar }}
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-info-circle"></i> Bio</label>
+                    {{ form.bio }}
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-map-marker-alt"></i> Address</label>
+                    {{ form.address }}
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label><i class="fas fa-city"></i> City</label>
+                        {{ form.city }}
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-map"></i> State</label>
+                        {{ form.state }}
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label><i class="fas fa-globe"></i> Country</label>
+                        {{ form.country }}
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fas fa-mail-bulk"></i> Postal Code</label>
+                        {{ form.postal_code }}
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div class="form-group">
+                        <label><i class="fas fa-palette"></i> Theme</label>
+                        {{ form.theme }}
+                    </div>
+
+                    <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 30px;">
+                        {{ form.email_notifications }}
+                        <label style="margin: 0;"><i class="fas fa-bell"></i> Email Notifications</label>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}Attendance Report{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="header-actions">
+        <h2><i class="fas fa-chart-bar"></i> Attendance Report</h2>
+        <a href="{% url 'attendance_list' %}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+
+    {% if report_data %}
+    <div class="table-container" style="margin-top: 30px;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Roll Number</th>
+                    <th>Total Days</th>
+                    <th>Present</th>
+                    <th>Attendance %</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in report_data %}
+                <tr>
+                    <td><strong>{{ data.student.name }}</strong></td>
+                    <td>{{ data.student.roll_number }}</td>
+                    <td>{{ data.total }}</td>
+                    <td>{{ data.present }}</td>
+                    <td>
+                        <span style="padding: 6px 12px; border-radius: 8px; font-weight: 600;
+                            background: {% if data.percentage >= 90 %}linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); color: #065f46;
+                            {% elif data.percentage >= 75 %}linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); color: #1e40af;
+                            {% elif data.percentage >= 60 %}linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #92400e;
+                            {% else %}linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); color: #991b1b;{% endif %}">
+                            {{ data.percentage }}%
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="fas fa-chart-bar"></i>
+        <h3>No Data Available</h3>
+        <p>No attendance records found to generate report.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

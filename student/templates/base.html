@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Student Management{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --border: #e2e8f0;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --shadow-lg: rgba(0, 0, 0, 0.15);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3), transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.3), transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header Styles */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 60px var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--gray);
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        /* Messages */
+        .messages {
+            margin-bottom: 25px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message {
+            padding: 16px 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px var(--shadow);
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .message::before {
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            font-size: 1.2rem;
+        }
+
+        .success {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+            border-left: 4px solid var(--success);
+        }
+
+        .success::before {
+            content: '\f058';
+            color: var(--success);
+        }
+
+        .error {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #991b1b;
+            border-left: 4px solid var(--danger);
+        }
+
+        .error::before {
+            content: '\f06a';
+            color: var(--danger);
+        }
+
+        /* Card Styles */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px var(--shadow);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+        }
+
+        thead {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+        }
+
+        th {
+            padding: 18px 20px;
+            text-align: left;
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        th:first-child {
+            border-top-left-radius: 16px;
+        }
+
+        th:last-child {
+            border-top-right-radius: 16px;
+        }
+
+        td {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%);
+            transform: scale(1.01);
+        }
+
+        tbody tr:last-child td:first-child {
+            border-bottom-left-radius: 16px;
+        }
+
+        tbody tr:last-child td:last-child {
+            border-bottom-right-radius: 16px;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            margin: 5px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--shadow-lg);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #dc2626 0%, var(--danger) 100%);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--gray) 0%, #475569 100%);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #475569 0%, var(--gray) 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn i {
+            font-size: 1rem;
+        }
+
+        /* Form Styles */
+        .form-container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Header Actions */
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-actions h2 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            font-weight: 700;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: var(--gray);
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: var(--gray);
+            margin-bottom: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            header {
+                padding: 20px 25px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            th,
+            td {
+                padding: 12px 10px;
+            }
+
+            .btn {
+                padding: 10px 18px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Loading Animation */
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .loading {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        /* Footer Styles */
+        footer {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-top: 40px;
+            padding: 40px;
+            box-shadow: 0 -10px 40px var(--shadow-lg);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 50%, var(--primary) 100%);
+            background-size: 200% 100%;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        @keyframes gradientShift {
+
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .footer-section h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-section p {
+            color: var(--gray);
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .social-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .social-link.github {
+            background: linear-gradient(135deg, rgba(36, 41, 47, 0.1) 0%, rgba(36, 41, 47, 0.2) 100%);
+        }
+
+        .social-link.github:hover {
+            background: linear-gradient(135deg, #24292f 0%, #1b1f23 100%);
+            color: white;
+            border-color: #24292f;
+        }
+
+        .social-link.linkedin {
+            background: linear-gradient(135deg, rgba(10, 102, 194, 0.1) 0%, rgba(10, 102, 194, 0.2) 100%);
+        }
+
+        .social-link.linkedin:hover {
+            background: linear-gradient(135deg, #0a66c2 0%, #004182 100%);
+            color: white;
+            border-color: #0a66c2;
+        }
+
+        .social-link.email {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.2) 100%);
+        }
+
+        .social-link.email:hover {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border-color: #ef4444;
+        }
+
+        .social-link i {
+            font-size: 1.2rem;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 2px solid var(--border);
+        }
+
+        .footer-bottom p {
+            color: var(--gray);
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+        }
+
+        .footer-bottom .heart {
+            color: #ef4444;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            10%,
+            30% {
+                transform: scale(1.1);
+            }
+
+            20%,
+            40% {
+                transform: scale(1);
+            }
+        }
+
+        .tech-stack {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .tech-badge {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--dark);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        @media (max-width: 768px) {
+            footer {
+                padding: 30px 20px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .social-links {
+                flex-direction: column;
+            }
+
+            .social-link {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Navigation Links */
+        .nav-link {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-link:hover {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .nav-link i {
+            font-size: 1rem;
+        }
+
+        /* Responsive Navigation */
+        @media (max-width: 1024px) {
+            nav .container>div:first-child {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            nav .container>div:first-child>div {
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-link span {
+                display: none;
+            }
+
+            .nav-link {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background-overlay"></div>
+
+    <!-- Navigation Bar -->
+    <nav
+        style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); padding: 15px 0; margin-bottom: 20px; box-shadow: 0 4px 20px var(--shadow); position: sticky; top: 0; z-index: 1000;">
+        <div class="container"
+            style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+            <div style="display: flex; align-items: center; gap: 30px;">
+                <a href="{% url 'dashboard' %}"
+                    style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-graduation-cap" style="font-size: 1.8rem; color: var(--primary);"></i>
+                    <span
+                        style="font-size: 1.3rem; font-weight: 700; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">SMS</span>
+                </a>
+
+                {% if user.is_authenticated %}
+                <div style="display: flex; gap: 20px; align-items: center;">
+                    <a href="{% url 'dashboard' %}" class="nav-link"><i class="fas fa-home"></i> Dashboard</a>
+                    <a href="{% url 'student_list' %}" class="nav-link"><i class="fas fa-users"></i> Students</a>
+                    <a href="{% url 'course_list' %}" class="nav-link"><i class="fas fa-book"></i> Courses</a>
+                    <a href="{% url 'attendance_list' %}" class="nav-link"><i class="fas fa-calendar-check"></i>
+                        Attendance</a>
+                    <a href="{% url 'assignment_list' %}" class="nav-link"><i class="fas fa-tasks"></i> Assignments</a>
+                    <a href="{% url 'announcement_list' %}" class="nav-link"><i class="fas fa-bullhorn"></i>
+                        Announcements</a>
+                </div>
+                {% endif %}
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 15px;">
+                {% if user.is_authenticated %}
+                <a href="{% url 'notification_list' %}" class="btn btn-secondary"
+                    style="padding: 8px 16px; position: relative;">
+                    <i class="fas fa-bell"></i>
+                    <span
+                        style="position: absolute; top: -5px; right: -5px; background: var(--danger); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700;">3</span>
+                </a>
+                <a href="{% url 'profile' %}" class="btn btn-secondary" style="padding: 8px 16px;">
+                    <i class="fas fa-user-circle"></i> {{ user.first_name|default:user.username }}
+                </a>
+                <a href="{% url 'logout' %}" class="btn btn-danger" style="padding: 8px 16px;">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+                {% else %}
+                <a href="{% url 'login' %}" class="btn btn-primary" style="padding: 8px 16px;">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+                <a href="{% url 'register' %}" class="btn btn-success" style="padding: 8px 16px;">
+                    <i class="fas fa-user-plus"></i> Register
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <header>
+        <h1><i class="fas fa-graduation-cap"></i> Student Management System</h1>
+        <p>Modern & Efficient Student Record Management</p>
+    </header>
+    <div class="container">
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="message {% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% block content %}{% endblock %}
+    </div>
+
+    <div class="container">
+        <footer>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fas fa-graduation-cap"></i> About</h3>
+                    <p>A modern and efficient Student Management System built with Django. Manage student records, track
+                        performance, and generate insights with ease.</p>
+                    <p style="font-weight: 600; color: var(--primary);">
+                        <i class="fas fa-code"></i> Built with passion and precision
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <h3><i class="fas fa-rocket"></i> Features</h3>
+                    <p><i class="fas fa-check-circle" style="color: var(--success);"></i> Student CRUD Operations</p>
+                    <p><i class="fas fa-check-circle" style="color: var(--success);"></i> Advanced Search & Filters</p>
+                    <p><i class="fas fa-check-circle" style="color: var(--success);"></i> CSV/Excel Import/Export</p>
+                    <p><i class="fas fa-check-circle" style="color: var(--success);"></i> Analytics Dashboard</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3><i class="fas fa-link"></i> Connect With Me</h3>
+                    <div class="social-links">
+                        <a href="https://github.com/Ankit2006Raj" target="_blank" class="social-link github">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub</span>
+                        </a>
+                        <a href="https://www.linkedin.com/in/ankit-raj-226a36309" target="_blank"
+                            class="social-link linkedin">
+                            <i class="fab fa-linkedin"></i>
+                            <span>LinkedIn</span>
+                        </a>
+                        <a href="mailto:ankit9905163014@gmail.com" class="social-link email">
+                            <i class="fas fa-envelope"></i>
+                            <span>Email</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="tech-stack">
+                    <span class="tech-badge"><i class="fab fa-python"></i> Django</span>
+                    <span class="tech-badge"><i class="fab fa-html5"></i> HTML5</span>
+                    <span class="tech-badge"><i class="fab fa-css3-alt"></i> CSS3</span>
+                    <span class="tech-badge"><i class="fab fa-js"></i> JavaScript</span>
+                    <span class="tech-badge"><i class="fas fa-database"></i> SQLite</span>
+                </div>
+                <p style="margin-top: 20px;">
+                    Made with <span class="heart"><i class="fas fa-heart"></i></span> by <strong>Ankit Raj</strong>
+                </p>
+                <p>&copy; 2025 Student Management System. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+</body>
+
+</html>

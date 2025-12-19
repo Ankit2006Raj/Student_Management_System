@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Import Students{% endblock %}
+{% block content %}
+<div class="card form-container">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h2 style="font-size: 2rem;"><i class="fas fa-upload"></i> Import Students</h2>
+        <p style="color: var(--gray);">Upload a CSV file to import multiple students</p>
+    </div>
+    <div
+        style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1)); padding: 20px; border-radius: 12px; margin-bottom: 25px;">
+        <h4 style="margin-bottom: 12px;"><i class="fas fa-info-circle"></i> CSV Format Requirements</h4>
+        <p style="margin-bottom: 10px;">Your CSV file should have the following columns:</p>
+        <code style="display: block; background: white; padding: 12px; border-radius: 8px; margin-bottom: 10px;">
+            name,roll_number,email,phone,marks
+        </code>
+        <p style="font-size: 0.9rem; color: var(--gray);">Example: John Doe,101,john@email.com,1234567890,85.5</p>
+    </div>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label><i class="fas fa-file-csv"></i> Select CSV File</label>
+            {{ form.csv_file }}
+            {% if form.csv_file.errors %}
+            <div style="color: var(--danger); margin-top: 8px;">{{ form.csv_file.errors }}</div>
+            {% endif %}
+        </div>
+        <div class="actions">
+            <button type="submit" class="btn btn-success"><i class="fas fa-upload"></i> Import Students</button>
+            <a href="{% url 'student_list' %}" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
+        </div>
+    </form>
+    <div
+        style="margin-top: 30px; padding: 15px; background: rgba(245, 158, 11, 0.1); border-left: 4px solid var(--warning); border-radius: 8px;">
+        <p style="font-weight: 600; margin-bottom: 8px;"><i class="fas fa-exclamation-triangle"></i> Important Notes:
+        </p>
+        <ul style="margin-left: 20px; color: var(--gray);">
+            <li>Duplicate roll numbers will be skipped</li>
+            <li>Marks must be between 0 and 100</li>
+            <li>Email addresses must be valid and unique</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="card" style="max-width: 500px; margin: 50px auto;">
+    <div style="text-align: center; margin-bottom: 30px;">
+        <i class="fas fa-sign-in-alt" style="font-size: 3rem; color: var(--primary); margin-bottom: 15px;"></i>
+        <h2 style="font-size: 2rem; color: var(--dark);">Welcome Back!</h2>
+        <p style="color: var(--gray);">Login to access your account</p>
+    </div>
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="message error">
+            {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        <div class="form-group">
+            <label><i class="fas fa-user"></i> Username</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+            <small style="color: var(--danger);">{{ form.username.errors.0 }}</small>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label><i class="fas fa-lock"></i> Password</label>
+            {{ form.password }}
+            {% if form.password.errors %}
+            <small style="color: var(--danger);">{{ form.password.errors.0 }}</small>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 1.1rem;">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+    </form>
+
+    <div style="text-align: center; margin-top: 25px; padding-top: 25px; border-top: 2px solid var(--border);">
+        <p style="color: var(--gray);">
+            Don't have an account?
+            <a href="{% url 'register' %}" style="color: var(--primary); font-weight: 600; text-decoration: none;">
+                Register here
+            </a>
+        </p>
+    </div>
+</div>
+{% endblock %}
