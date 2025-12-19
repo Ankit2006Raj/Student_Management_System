@@ -173,7 +173,7 @@ A passionate developer dedicated to creating efficient and scalable educational 
 
 ### Connect with Me
 
-- 🐙 **GitHub**: [Ankit2006Rajand](https://github.com/Ankit2006Rajand)
+- 🐙 **GitHub**: [Ankit2006Rajand](https://github.com/Ankit2006Raj)
 - 💼 **LinkedIn**: [Ankit Raj](https://www.linkedin.com/in/ankit-raj-226a36309)
 - 📧 **Email**: [ankit9905163014@gmail.com](mailto:ankit9905163014@gmail.com)
 
@@ -185,6 +185,3 @@ For any queries or support, feel free to reach out via email or connect on Linke
 
 ---
 
-**Status**: ✅ Production-Ready Industry-Level Application
-
-**Last Updated**: December 2025 
