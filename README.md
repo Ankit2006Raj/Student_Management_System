@@ -57,31 +57,6 @@ A **production-ready, enterprise-level** Django application for comprehensive st
 - **Email Notifications** - Optional email alerts
 - **Notification Types** - Info, Success, Warning, Error, Assignment, Grade, Attendance
 
-### 📊 Analytics & Reports
-- **Dashboard** - Visual statistics and charts
-- **Grade Distribution** - Interactive charts showing grade breakdown
-- **Top Performers** - Highlight best students
-- **Attendance Analytics** - Overall attendance statistics
-- **Performance Trends** - Track student performance over time
-- **Export Reports** - CSV, Excel, PDF formats
-
-### 🔌 REST API
-- **Complete API** - RESTful API for all resources
-- **Authentication** - Token-based authentication
-- **Filtering & Search** - Advanced query capabilities
-- **Pagination** - Efficient data handling
-- **Documentation** - Complete API documentation
-
-### 🎨 Modern UI/UX
-- **Responsive Design** - Works on all devices
-- **Glassmorphism Effects** - Modern, beautiful design
-- **Smooth Animations** - Professional transitions
-- **Dark Mode Support** - User preference-based theming
-- **Interactive Charts** - Chart.js integration
-- **Font Awesome Icons** - Professional iconography
-- **Color-Coded Grades** - Visual performance indicators
-- **Navigation Bar** - Sticky, responsive navigation
-
 ## 🚀 Quick Start
 
 ### Automated Setup (Recommended)
@@ -114,96 +89,12 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-### Default Login Credentials (After setup_advanced.py)
-- **Admin**: username: `admin`, password: `admin123`
-- **Teacher**: username: `teacher1`, password: `teacher123`
-- **Student**: username: `student1`, password: `student123`
-
 ### Access Points
 - **Dashboard**: http://127.0.0.1:8000/
 - **Admin Panel**: http://127.0.0.1:8000/admin/
 - **API**: http://127.0.0.1:8000/api/
 - **Login**: http://127.0.0.1:8000/accounts/login/
-
-## 📁 Project Structure
-
-```
-Student_Record_Management_System/
-├── student/
-│   ├── migrations/
-│   ├── templates/
-│   │   ├── base.html                    # Base template with modern UI
-│   │   └── student/
-│   │       ├── dashboard.html           # Analytics dashboard
-│   │       ├── student_list.html        # List with search/filter
-│   │       ├── student_form.html        # Add/Edit form
-│   │       ├── detail.html              # Student profile
-│   │       ├── student_confirm_delete.html
-│   │       └── import.html              # CSV import
-│   ├── models.py                        # Enhanced Student model
-│   ├── views.py                         # All CRUD + features
-│   ├── forms.py                         # Forms with validation
-│   ├── urls.py                          # URL patterns
-│   └── admin.py
-├── student_management/
-│   ├── settings.py                      # Project settings
-│   └── urls.py                          # Main URL config
-├── media/                               # Uploaded files
-├── requirements.txt                     # Dependencies
-├── sample_students.csv                  # Sample import file
-├── SETUP_INSTRUCTIONS.md               # Detailed setup guide
-└── manage.py
-```
-
-## 📊 Student Model
-
-```python
-class Student(models.Model):
-    # Basic Information
-    name = models.CharField(max_length=100)
-    roll_number = models.IntegerField(unique=True)
-    email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=15, blank=True)
-    date_of_birth = models.DateField(blank=True)
-    photo = models.ImageField(upload_to='student_photos/', blank=True)
-    
-    # Address
-    address = models.TextField(blank=True)
-    city = models.CharField(max_length=100, blank=True)
-    state = models.CharField(max_length=100, blank=True)
-    
-    # Academic
-    marks = models.FloatField(validators=[MinValueValidator(0), MaxValueValidator(100)])
-    grade = models.CharField(max_length=1, choices=GRADE_CHOICES)
-    
-    # Metadata
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=True)
-```
-
-## 📥 CSV Import Format
-
-```csv
-name,roll_number,email,phone,marks
-John Doe,101,john@email.com,1234567890,85.5
-Jane Smith,102,jane@email.com,0987654321,92.0
-```
-
-See `sample_students.csv` for a complete example.
-
-## 🎓 Grade System
-
-| Grade | Marks Range | Description |
-|-------|-------------|-------------|
-| A     | 90-100      | Excellent   |
-| B     | 80-89       | Very Good   |
-| C     | 70-79       | Good        |
-| D     | 60-69       | Average     |
-| F     | 0-59        | Fail        |
-
-Grades are automatically calculated when saving student records.
-
+- 
 ## 🛠️ Technologies Used
 
 ### Backend
@@ -227,6 +118,8 @@ Grades are automatically calculated when saving student records.
 - **django-cors-headers** - CORS support
 
 ## 📱 Screenshots
+<img width="1348" height="597" alt="image" src="https://github.com/user-attachments/assets/e9e61d56-8ab5-4c9c-a4a6-c4debb0088e0" />
+<img width="1280" height="649" alt="image" src="https://github.com/user-attachments/assets/8373c428-3cbc-4d6d-9de1-dea81c257357" />
 
 ### Dashboard
 - Visual statistics cards
@@ -245,84 +138,6 @@ Grades are automatically calculated when saving student records.
 - Complete information
 - Color-coded performance
 - Quick edit/delete actions
-
-## 🔮 Future Enhancements
-
-### Phase 1 (Next 3 months)
-- [ ] Real-time chat system
-- [ ] Video conferencing integration
-- [ ] Advanced analytics with ML
-- [ ] Mobile app (React Native)
-
-### Phase 2 (Next 6 months)
-- [ ] Fee management
-- [ ] Library management
-- [ ] Transport management
-- [ ] Exam management
-
-### Phase 3 (Next 12 months)
-- [ ] Hostel management
-- [ ] Timetable generation
-- [ ] Automated report cards
-- [ ] Biometric attendance
-- [ ] ID card generation
-- [ ] SMS notifications
-
-## 📚 Documentation
-
-Comprehensive documentation is available:
-
-- **[QUICK_START.md](QUICK_START.md)** - Get started in 5 minutes
-- **[PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md)** - Complete project documentation
-- **[API_DOCUMENTATION.md](API_DOCUMENTATION.md)** - REST API reference
-- **[DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)** - Production deployment guide
-- **[FEATURES_SUMMARY.md](FEATURES_SUMMARY.md)** - What's new in v2.0
-
-## 📝 Usage Examples
-
-### Django ORM Operations
-
-```python
-from student.models import Student, Course, Enrollment, Attendance
-
-# Create a student
-student = Student.objects.create(
-    name="John Doe",
-    roll_number=101,
-    email="john@example.com",
-    marks=85.5,
-    class_name="12A"
-)
-
-# Enroll student in a course
-course = Course.objects.get(code="MATH101")
-Enrollment.objects.create(student=student, course=course)
-
-# Mark attendance
-Attendance.objects.create(
-    student=student,
-    course=course,
-    date=timezone.now().date(),
-    status='P'
-)
-
-# Get student's attendance percentage
-percentage = student.get_attendance_percentage()
-
-# Search students
-results = Student.objects.filter(name__icontains="John")
-
-# Get top performers
-top_students = Student.objects.filter(marks__gte=90).order_by('-marks')
-
-# Calculate average
-from django.db.models import Avg
-avg_marks = Student.objects.aggregate(Avg('marks'))
-
-# Grade distribution
-from django.db.models import Count
-distribution = Student.objects.values('grade').annotate(count=Count('grade'))
-```
 
 ### API Usage
 
@@ -352,15 +167,24 @@ This project is open source and available under the MIT License.
 
 ## 👨‍💻 Author
 
-Created with ❤️ for educational and professional use.
+**Ankit Raj**
+
+A passionate developer dedicated to creating efficient and scalable educational management solutions.
+
+### Connect with Me
+
+- 🐙 **GitHub**: [Ankit2006Rajand](https://github.com/Ankit2006Rajand)
+- 💼 **LinkedIn**: [Ankit Raj](https://www.linkedin.com/in/ankit-raj-226a36309)
+- 📧 **Email**: [ankit9905163014@gmail.com](mailto:ankit9905163014@gmail.com)
 
 ## 📞 Support
 
 For detailed setup instructions, see `SETUP_INSTRUCTIONS.md`
 
+For any queries or support, feel free to reach out via email or connect on LinkedIn.
+
 ---
 
 **Status**: ✅ Production-Ready Industry-Level Application
 
-**Last Updated**: December 2024
-"# Student_Management_System" 
+**Last Updated**: December 2025 
