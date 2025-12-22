@@ -56,20 +56,7 @@ A **production-ready, enterprise-level** Django application for comprehensive st
 - **Notifications** - Real-time notification system
 - **Email Notifications** - Optional email alerts
 - **Notification Types** - Info, Success, Warning, Error, Assignment, Grade, Attendance
-
-## 🚀 Quick Start
-
-### Automated Setup (Recommended)
-```bash
-# 1. Install dependencies
-pip install -r requirements.txt
-
-# 2. Run the advanced setup script (creates everything!)
-python setup_advanced.py
-
-# 3. Start the server
-
-
+  
 ### Manual Setup
 ```bash
 # 1. Install dependencies
