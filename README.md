@@ -68,10 +68,7 @@ pip install -r requirements.txt
 python setup_advanced.py
 
 # 3. Start the server
-python manage.py runserver
 
-# 4. Open browser to http://127.0.0.1:8000/
-```
 
 ### Manual Setup
 ```bash
